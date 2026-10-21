@@ -1,28 +1,30 @@
-# Authorizer Server on Railway App
+# Authorizer Server on Railway
 
-Deploy production ready [authorizer.dev](https://authorizer.dev) instance using [railway.app](https://railway.app) with [PostgreSQL](https://github.com/authorizerdev/authorizer-railway) / [MySQL](https://github.com/authorizerdev/authorizer-railway/tree/with-mysql-redis) and Redis for free and build with it in 30seconds
+A deployment wrapper that runs the upstream Authorizer auth server as a Docker image on Railway, with PostgreSQL and Redis options.
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/nwXp1C?referralCode=FEF4uT)
+**Status:** Starter. The repo holds a short Dockerfile and a README for a Railway deploy template. It contains no application code, so the substance lives in the upstream Authorizer image.
 
-## ✨ Features
+## The problem
 
-- [Authorizer](https://authorizer.dev)
-- [PostgreSQL](https://github.com/authorizerdev/authorizer-railway) / [MySQL](https://github.com/authorizerdev/authorizer-railway/tree/with-mysql-redis)
-- REDIS
+Running an authentication server means provisioning a database, configuring the server and keeping it updated. This repo packages Authorizer for one-click deployment on Railway so a team can start with a working instance and a managed database.
 
-## 💁‍♀️ How to use
+## What it does
 
-- Click the Railway button 👆
-- Configure the required environment variables. Checkout docs on [environment variables](https://docs.authorizer.dev/core/env/) to get more information.
-- Deploy
+- Pins the upstream `lakhansamani/authorizer` image at version 1.1.0 in the `Dockerfile`.
+- Starts the server with `--database_type=postgres`, so the instance uses PostgreSQL.
+- Documents a Railway deploy button that provisions the server, with PostgreSQL or MySQL and Redis as options.
+- Points to the upstream docs for the environment variables that configure each instance.
+- Explains how to upgrade an existing Railway deployment by changing the image tag in the Dockerfile.
 
-## 📝 Notes
+## How it's built
 
-- Source repo: https://github.com/authorizerdev/authorizer
-- Docs: https://docs.authorizer.dev/deployment/railway/
+- The whole repo is a Dockerfile that extends the upstream Authorizer image. There is no source code, package manifest or build step in this repo.
+- Configuration is supplied at runtime through environment variables set in Railway, and the database type is set in the start command.
+- Upgrades are a version bump in the Dockerfile, with the image coming from Docker Hub.
 
-### Updating Authorizer on existing Railway instance
+## What's left
 
-- You can update the [docker image](https://github.com/authorizerdev/authorizer-railway/blob/main/Dockerfile#L1) to the desired version in your repository which gets created with your deployment.
-
-- You can find all the versions on [github](https://github.com/authorizerdev/authorizer/releases) or [dockerhub](https://hub.docker.com/r/lakhansamani/authorizer)
+- The repo has no tests, CI or health checks.
+- The PostgreSQL template is the only database wired into this Dockerfile. The MySQL and Redis variants are described in the README but live in other repos or branches.
+- The image is pinned to 1.1.0, which is older than the 1.1.30 pinned in the sibling `authorizer` repo, and needs a manual bump to upgrade.
+- The README is an adapted copy of the upstream Railway template README, and some of its links point to other repositories.
